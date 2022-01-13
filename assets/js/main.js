@@ -1,6 +1,6 @@
 /**
-* Template Name: eNno - v4.3.0
-* Template URL: https://bootstrapmade.com/enno-free-simple-bootstrap-template/
+* Template Name: Eterna - v4.7.0
+* Template URL: https://bootstrapmade.com/eterna-free-multipurpose-bootstrap-template/
 * Author: BootstrapMade.com
 * License: https://bootstrapmade.com/license/
 */
@@ -41,26 +41,6 @@
   }
 
   /**
-   * Navbar links active state on scroll
-   */
-  let navbarlinks = select('#navbar .scrollto', true)
-  const navbarlinksActive = () => {
-    let position = window.scrollY + 200
-    navbarlinks.forEach(navbarlink => {
-      if (!navbarlink.hash) return
-      let section = select(navbarlink.hash)
-      if (!section) return
-      if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
-        navbarlink.classList.add('active')
-      } else {
-        navbarlink.classList.remove('active')
-      }
-    })
-  }
-  window.addEventListener('load', navbarlinksActive)
-  onscroll(document, navbarlinksActive)
-
-  /**
    * Scrolls to an element with header offset
    */
   const scrollto = (el) => {
@@ -79,19 +59,23 @@
   }
 
   /**
-   * Toggle .header-scrolled class to #header when page is scrolled
+   * Header fixed top on scroll
    */
   let selectHeader = select('#header')
   if (selectHeader) {
-    const headerScrolled = () => {
-      if (window.scrollY > 100) {
-        selectHeader.classList.add('header-scrolled')
+    let headerOffset = selectHeader.offsetTop
+    let nextElement = selectHeader.nextElementSibling
+    const headerFixed = () => {
+      if ((headerOffset - window.scrollY) <= 0) {
+        selectHeader.classList.add('fixed-top')
+        nextElement.classList.add('scrolled-offset')
       } else {
-        selectHeader.classList.remove('header-scrolled')
+        selectHeader.classList.remove('fixed-top')
+        nextElement.classList.remove('scrolled-offset')
       }
     }
-    window.addEventListener('load', headerScrolled)
-    onscroll(document, headerScrolled)
+    window.addEventListener('load', headerFixed)
+    onscroll(document, headerFixed)
   }
 
   /**
@@ -159,11 +143,69 @@
   });
 
   /**
-   * Initiate glightbox 
+   * Hero carousel indicators
    */
-  const glightbox = GLightbox({
-    selector: '.glightbox'
+  let heroCarouselIndicators = select("#hero-carousel-indicators")
+  let heroCarouselItems = select('#heroCarousel .carousel-item', true)
+
+  heroCarouselItems.forEach((item, index) => {
+    (index === 0) ?
+    heroCarouselIndicators.innerHTML += "<li data-bs-target='#heroCarousel' data-bs-slide-to='" + index + "' class='active'></li>":
+      heroCarouselIndicators.innerHTML += "<li data-bs-target='#heroCarousel' data-bs-slide-to='" + index + "'></li>"
   });
+
+  /**
+   * Clients Slider
+   */
+  new Swiper('.clients-slider', {
+    speed: 400,
+    loop: true,
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false
+    },
+    slidesPerView: 'auto',
+    pagination: {
+      el: '.swiper-pagination',
+      type: 'bullets',
+      clickable: true
+    },
+    breakpoints: {
+      320: {
+        slidesPerView: 2,
+        spaceBetween: 40
+      },
+      480: {
+        slidesPerView: 3,
+        spaceBetween: 60
+      },
+      640: {
+        slidesPerView: 4,
+        spaceBetween: 80
+      },
+      992: {
+        slidesPerView: 6,
+        spaceBetween: 120
+      }
+    }
+  });
+
+  /**
+   * Skills animation
+   */
+  let skilsContent = select('.skills-content');
+  if (skilsContent) {
+    new Waypoint({
+      element: skilsContent,
+      offset: '80%',
+      handler: function(direction) {
+        let progress = select('.progress .progress-bar', true);
+        progress.forEach((el) => {
+          el.style.width = el.getAttribute('aria-valuenow') + '%'
+        });
+      }
+    })
+  }
 
   /**
    * Porfolio isotope and filter
@@ -172,7 +214,8 @@
     let portfolioContainer = select('.portfolio-container');
     if (portfolioContainer) {
       let portfolioIsotope = new Isotope(portfolioContainer, {
-        itemSelector: '.portfolio-item'
+        itemSelector: '.portfolio-item',
+        layoutMode: 'fitRows'
       });
 
       let portfolioFilters = select('#portfolio-flters li', true);
@@ -187,7 +230,6 @@
         portfolioIsotope.arrange({
           filter: this.getAttribute('data-filter')
         });
-
       }, true);
     }
 
@@ -214,35 +256,6 @@
       el: '.swiper-pagination',
       type: 'bullets',
       clickable: true
-    }
-  });
-
-  /**
-   * Testimonials slider
-   */
-  new Swiper('.testimonials-slider', {
-    speed: 600,
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false
-    },
-    slidesPerView: 'auto',
-    pagination: {
-      el: '.swiper-pagination',
-      type: 'bullets',
-      clickable: true
-    },
-    breakpoints: {
-      320: {
-        slidesPerView: 1,
-        spaceBetween: 20
-      },
-
-      1200: {
-        slidesPerView: 3,
-        spaceBetween: 20
-      }
     }
   });
 
